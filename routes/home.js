@@ -11,6 +11,11 @@ router.get("/", async (req, res, next) => {
 });
 
 /*
+app.get('/', (req: Request, res: Response) => {
+  res.sendFile('index.html', {root: path.join(__dirname, 'public')});
+});*/
+
+/*
 router.get("/", async (req, res, next) => {
   return res.status(200).json({
     title: "Express Testing",
