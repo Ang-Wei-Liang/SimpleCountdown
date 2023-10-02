@@ -16,7 +16,7 @@ app.use(express.json());
 // Routes
 app.use("/home", home);
 
-app.use(express.static('routes/public'));
+app.use(express.static('routes/views'));
 
 const API_KEY = process.env.YOUTUBE_API_KEY
 
@@ -32,7 +32,7 @@ app.set('views', __dirname + '/views');
 
 
 // Serve static files (e.g., CSS, images, JavaScript)
-app.use(express.static('public'));
+app.use(express.static('views'));
 
 
 // Middleware for parsing POST data (if needed)
