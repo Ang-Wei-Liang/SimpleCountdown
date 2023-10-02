@@ -8,15 +8,21 @@ const colors = require('colors');
 
 const { google } = require('googleapis');
 const { YoutubeTranscript } = require('youtube-transcript');
+const path = require('path'); // Import the 'path' module
+
 
 // Middlewares
 const app = express();
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, 'routes/public')));
+
+
 // Routes
 app.use("/home", home);
 
-app.use(express.static('routes/public'));
+//app.use(express.static('routes/public'));
+//app.use(express.static(path.join(__dirname, 'routes/public')));
 
 const API_KEY = process.env.YOUTUBE_API_KEY
 
