@@ -16,7 +16,7 @@ app.use(express.json());
 // Routes
 app.use("/home", home);
 
-app.use(express.static('routes/public'));
+app.use(express.static('routes/views'));
 
 const API_KEY = process.env.YOUTUBE_API_KEY
 
