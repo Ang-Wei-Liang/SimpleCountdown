@@ -16,7 +16,7 @@ app.use(express.json());
 // Routes
 app.use("/home", home);
 
-app.use(express.static('routes/views'));
+app.use(express.static('routes/public'));
 
 const API_KEY = process.env.YOUTUBE_API_KEY
 
@@ -27,7 +27,7 @@ const youtube = google.youtube({
 });
 
 // EJS template engine setup
-app.set('view engine', 'ejs');
+/*app.set('view engine', 'ejs');*/
 app.set('views', __dirname + '/views');
 
 
