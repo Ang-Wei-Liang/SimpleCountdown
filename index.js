@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, 'routes/public')));
 
 
 // Routes
-app.use("/home", home);
+app.use("/", home);
 
 //app.use(express.static('routes/public'));
 //app.use(express.static(path.join(__dirname, 'routes/public')));
@@ -56,7 +56,12 @@ app.get('/', (req, res) => {
 app.post('/chat', async (req, res) => {
     // Obtaining Both Params
     const userInput = req.body.userInput;
-    const chatHistory = req.body.chatHistory || [];
+    var chatHistory = [];
+    if (req.body.chatHistory){
+    chatHistory = req.body.chatHistory || [];
+    } else {
+        chatHistory = req.body.chatHistoryMirror || [];
+    }
 
     try {
         // Construct messages by iterating over the history
@@ -77,6 +82,7 @@ app.post('/chat', async (req, res) => {
         const completion = await openai.chat.completions.create({
             messages: messages,
             model: 'gpt-3.5-turbo',
+            max_tokens: 70,
         });
 
 

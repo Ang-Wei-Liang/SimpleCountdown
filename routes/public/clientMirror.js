@@ -10,7 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log("before user-input is " + userInputField)
     
       // Initialize chat history
-      let chatHistory = [];
+      var chatHistoryMirror = [];
+
+      var promptInput = "You are my mental abstract virtual mirror. You must give me CONCISE reflections in 45 words. To give me reflections, you have to get information from me. In the context of this information you will ask for further information. And so on."
+
+      var assistantInput = "Certainly, I can act as your mental abstract virtual mirror. To get started, please provide me with some information or a topic you'd like to reflect upon, and I'll ask questions and engage in a conversation to help you explore that topic further. What's on your mind today, or is there a specific subject you'd like to discuss?"
+
+      chatHistoryMirror.push(['system', promptInput]);
+      chatHistoryMirror.push(['assistant', assistantInput]);
 
       
     
@@ -71,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userInput, chatHistory }),
+            body: JSON.stringify({ userInput, chatHistoryMirror }),
           });
     
           if (!response.ok) {
@@ -81,12 +88,30 @@ document.addEventListener('DOMContentLoaded', () => {
           const data = await response.json();
     
           // Display the bot's response
-          const botResponse = data.response;
+          const botResponse = "ok";
+          //const botResponse = data.response;
           console.log("Bot's resposne is: " + botResponse)
   
   
-          chatHistory = data.chatHistory;
-          console.log("Chat History is: " + chatHistory)
+          var chatHistoryUnextracted = data.chatHistory;
+          //var chatHistoryUnextracted = [["a", "1"], ["b", "2"], ["c", "3"], ["d", "4"], ["e", "5"], ["f", "6"], ["g", "7"], ["h", "8"], ["i", "9"]]
+
+
+          //chatHistoryUnextracted = data.chatHistory;
+
+          var latestSixElements = chatHistoryUnextracted;
+
+          if (chatHistoryUnextracted.length > 6) {
+            latestSixElements = chatHistoryUnextracted.slice(0, 2).concat(chatHistoryUnextracted.slice(-4));
+          } else {
+            //var latestSixElements = chatHistoryUnextracted;
+          }
+
+          chatHistoryMirror = latestSixElements
+
+
+
+          console.log("Chat History is: " + chatHistoryMirror)
   
           addMessage('bot', botResponse);
     

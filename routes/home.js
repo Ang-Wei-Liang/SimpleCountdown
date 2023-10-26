@@ -10,6 +10,11 @@ router.get("/", async (req, res, next) => {
   return res.sendFile(filePath);
 });
 
+router.get("/mirror", async (req, res, next) => {
+  const filePath = path.join(__dirname, "views", "mirror.html");
+  return res.sendFile(filePath);
+});
+
 /*
 app.get('/', (req: Request, res: Response) => {
   res.sendFile('index.html', {root: path.join(__dirname, 'public')});

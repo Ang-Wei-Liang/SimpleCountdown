@@ -19,10 +19,8 @@
     "ejs": "^3.1.9",
     "express": "^4.17.3",
     "googleapis": "^126.0.1",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.22",
     "openai": "^4.11.1",
     "youtube-transcript": "^1.0.6"
   }
 }
-
-
