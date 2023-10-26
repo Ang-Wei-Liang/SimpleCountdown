@@ -88,8 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const data = await response.json();
     
           // Display the bot's response
-          const botResponse = "ok";
-          //const botResponse = data.response;
+          //const botResponse = "ok";
+          const botResponse = data.response;
           console.log("Bot's resposne is: " + botResponse)
   
   
