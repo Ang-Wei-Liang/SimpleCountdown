@@ -69,13 +69,19 @@ app.post('/chat', async (req, res) => {
         messages.push({ role: 'user', content: userInput });
 
         // Call the API with user input & history
-        const completion = await openai.createChatCompletion({
+        /*const completion = await openai.createChatCompletion({
             model: 'gpt-3.5-turbo',
             messages: messages,
+        });*/
+
+        const completion = await openai.chat.completions.create({
+            messages: messages,
+            model: 'gpt-3.5-turbo',
         });
 
+
         // Get completion text/content
-        const completionText = completion.data.choices[0].message.content;
+        const completionText = completion.choices[0].message.content;
 
         if (userInput.toLowerCase() === 'exit') {
             console.log(colors.green('Thank you for playing the game!'));
