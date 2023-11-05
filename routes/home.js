@@ -10,15 +10,9 @@ router.get("/", async (req, res, next) => {
   return res.sendFile(filePath);
 });
 
-router.get("/mirror", async (req, res, next) => {
-  const filePath = path.join(__dirname, "views", "mirror.html");
-  return res.sendFile(filePath);
-});
 
-/*
-app.get('/', (req: Request, res: Response) => {
-  res.sendFile('index.html', {root: path.join(__dirname, 'public')});
-});*/
+
+
 
 /*
 router.get("/", async (req, res, next) => {
@@ -30,17 +24,3 @@ router.get("/", async (req, res, next) => {
 
 module.exports = router;
 
-
-
-/*router.get("/home", async (req, res, next) => {
-  // Render the "home.ejs" template
-  console.log("home reached")
-  const templatePath = path.join(__dirname, "views", "index.ejs");
-  ejs.renderFile(templatePath, { title: "Express Testing" }, (err, html) => {
-    if (err) {
-      console.error("Error rendering EJS template:", err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.send(html);
-  });
-});*/
