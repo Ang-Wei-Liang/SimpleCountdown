@@ -2,7 +2,9 @@
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <style>
@@ -69,7 +71,7 @@
 </head>
 
 <body>
-    
+
     <div id="container">
         <div id="taskSection">
             <h2>Simple Countdown</h2>
@@ -94,6 +96,7 @@
     </div>
 
     <script>
+
         $(document).ready(function () {
             $('#openDatePicker').click(function () {
                 $('#deadline').datetimepicker();
@@ -109,50 +112,31 @@
                     return;
                 }
 
-                addTask(activity, deadline);
+                var now = new Date();
+                //var timeRemaining = Math.max(0, Math.floor((deadline - now) / 1000));
+                var timeRemainingFromStart = Math.max(0, Math.floor((deadline - now) / 1000));
+
+                if (timeRemainingFromStart <= 0){
+                    alert('Please enter a valid activity and deadline.');
+                    return;
+                }
+
+                addTask(activity, deadline, timeRemainingFromStart, timeRemainingFromStart);
 
                 // Save the task in local storage
                 var tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-                tasks.push({ activity: activity, deadline: deadlineInput });
+                tasks.push({ activity: activity, deadline: deadlineInput, timeRemainingFromStart: timeRemainingFromStart });
                 localStorage.setItem('tasks', JSON.stringify(tasks));
             });
 
-            function addTask(activity, deadline) {
-                var now = new Date();
-                var timeRemaining = Math.max(
-                    0,
-                    Math.floor((deadline - now) / 1000)
-                );
-                var progressBar = $(
-                    '<div class="progressBar"><div class="bar"></div></div>'
-                );
-                var deleteButton = $(
-                    '<button class="deleteButton">Delete</button>'
-                );
-                deleteButton.on('click', function () {
-                    deleteTask(this);
-                });
-                var taskElement = $(
-                    '<div class="task"><span class="activity">' +
-                    activity +
-                    '</span></div>'
-                );
-                taskElement.append(progressBar, deleteButton);
-                $('#taskList').append(taskElement);
+            // Function to update progress bar
+            function updateProgressBar($element, timeRemaining) {
+                var progressBarWidth = ((timeRemaining / $element.data('timetotal')) * 100) + '%';
 
-                progress(timeRemaining, timeRemaining, progressBar);
-
-                $('#activity').val('');
-                $('#deadline').val('');
-            }
-
-            function deleteTask(button) {
-                var taskElement = $(button).closest('.task');
-                var taskIndex = taskElement.index();
-                var tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-                tasks.splice(taskIndex, 1);
-                localStorage.setItem('tasks', JSON.stringify(tasks));
-                taskElement.remove();
+                $element
+                    .find('div')
+                    .animate({ width: progressBarWidth }, 1000)
+                    .html(formatTime(timeRemaining));
             }
 
             function progress(timeleft, timetotal, $element) {
@@ -169,6 +153,49 @@
                     }, 1000);
                 }
             }
+
+            // Function to add a task with time remaining
+            function addTask(activity, deadline, timeRemaining, timeRemainingFromStart) {
+                var progressBar = $(
+                    '<div class="progressBar"><div class="bar"></div></div>'
+                ).data('timetotal', timeRemaining);
+
+                // Create and append the task element
+                var deleteButton = $(
+                    '<button class="deleteButton">Delete</button>'
+                );
+                deleteButton.on('click', function () {
+                    deleteTask(this);
+                });
+                var taskElement = $(
+                    '<div class="task"><span class="activity">' +
+                    activity +
+                    '</span></div>'
+                );
+                taskElement.append(progressBar, deleteButton);
+                $('#taskList').append(taskElement);
+
+                progress(timeRemaining, timeRemainingFromStart, progressBar);
+
+                // Update the progress bar with the saved time remaining
+                //updateProgressBar(progressBar, timeRemaining);
+
+                // Start a timer to update the progress bar
+                //startProgressBarTimer(timeRemaining, progressBar);
+
+                $('#activity').val('');
+                $('#deadline').val('');
+            }
+
+            function deleteTask(button) {
+                var taskElement = $(button).closest('.task');
+                var taskIndex = taskElement.index();
+                var tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+                tasks.splice(taskIndex, 1);
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                taskElement.remove();
+            }
+
 
             function formatTime(timeleft) {
                 var weeks = Math.floor(timeleft / 604800);
@@ -204,12 +231,54 @@
                 return numberString;
             }
 
-            // Load saved tasks on page load
-            var savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-            savedTasks.forEach(function (task) {
-                var deadline = new Date(task.deadline);
-                addTask(task.activity, deadline);
+            // Function to populate tasks from local storage
+            function populateTasksFromLocalStorage() {
+                var savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+                savedTasks.forEach(function (task) {
+
+
+                    var deadline = new Date(task.deadline);
+                    var now = new Date();
+                    var timeRemainingFromStart = task.timeRemainingFromStart
+                    var timeRemaining = Math.max(0, Math.floor((deadline - now) / 1000));
+
+                    console.log(task.activity + deadline + timeRemaining + timeRemainingFromStart)
+
+
+                    if (timeRemaining > 0) {
+                        addTask(task.activity, deadline, timeRemaining, timeRemainingFromStart);
+                    }
+                });
+            }
+
+            function clearAndRepopulateTasks() {
+                // Clear the existing tasks and progress bars
+                $('#taskList').empty();
+                $('#progressBars').empty();
+
+                // Populate tasks from local storage
+                populateTasksFromLocalStorage();
+            }
+
+            // Populate tasks from local storage on page load
+            populateTasksFromLocalStorage();
+
+            // Populate tasks from local storage when navigating back to the tab
+            $(window).on('focus', function () {
+                clearAndRepopulateTasks();
             });
+
+            // Function to start a timer for updating the progress bar
+            /*function startProgressBarTimer(timeRemaining, $element) {
+                if (timeRemaining > 0) {
+                    setTimeout(function () {
+                        timeRemaining -= 1;
+                        //updateProgressBar($element, timeRemaining);
+                        progress(timeRemaining, timeRemaining, $element)
+                        startProgressBarTimer(timeRemaining, $element);
+                    }, 1000);
+                }
+            }*/
         });
     </script>
 
