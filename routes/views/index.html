@@ -245,8 +245,10 @@
                     console.log(task.activity + deadline + timeRemaining + timeRemainingFromStart)
 
 
-                    if (timeRemaining > 0) {
+                    if (timeRemaining >= 0) {
                         addTask(task.activity, deadline, timeRemaining, timeRemainingFromStart);
+                    } else {
+
                     }
                 });
             }
