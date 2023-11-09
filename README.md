@@ -1,8 +1,8 @@
-# Hello
-Hosting express node project on vercel
+# SimpleCountdown
+A simple countdown to visualise your deadlines
 
 ### Video
 > https://youtu.be/vCuf62T2snY
 
 ### Deployed on
-> https://node-express-vercel-rose.vercel.app/home
+> https://simple-countdown.vercel.app/
